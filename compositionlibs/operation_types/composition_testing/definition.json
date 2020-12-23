@@ -1,0 +1,9 @@
+{
+  "name": "Composition Testing",
+  "parent_class": "OperationType",
+  "category": "CompositionLibs",
+  "inputs": [],
+  "outputs": [],
+  "on_the_fly": null,
+  "user_id": 1
+}

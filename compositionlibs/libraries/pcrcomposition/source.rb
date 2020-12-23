@@ -97,56 +97,11 @@ class PCRComposition
     input(WATER)
   end
 
-  # Retrieves components by input name
-  # Generally the named methods should be used.
-  # However, this method can be convenient in loops, especially when
-  #   the Protocol draws input names from `CommonInputOutputNames`
-  #
-  # @param input_name [String] the name of the component to be retrieved
-  # @return [ReactionComponent]
-  def input(input_name)
-    components.find { |c| c.input_name == input_name }
-  end
-
-  # Displays the total reaction volume with units
-  #
-  # @todo Make this work better with units other than microliters
-  # @return [String]
-  def qty_display
-    Units.qty_display({ qty: volume, units: MICROLITERS })
-  end
-
-  # The total reaction volume
-  # @note Rounds to one decimal place
-  # @return [Float]
-  def volume
-    sum_components
-  end
-
-  # The total reaction volume
-  # @param round [Fixnum] the number of decimal places to round to
-  # @return [Float]
-  def sum_components(round = 1)
-    components.map(&:qty).reduce(:+).round(round)
-  end
-
   # The total volume of all components that have been added
   # @param (see #sum_components)
   # @return (see #sum_components)
   def sum_added_components(round = 1)
     added_components.map(&:qty).reduce(:+).round(round)
-  end
-
-  # Gets the components that have been added
-  # @return [Array<ReactionComponent>]
-  def added_components
-    components.select(&:added?)
-  end
-
-  # Gets the `Item`s from `ReactionComponent`s and returns them as an array
-  # @return [Array<Item>]
-  def items
-    components.map(&:item)
   end
 end
 
