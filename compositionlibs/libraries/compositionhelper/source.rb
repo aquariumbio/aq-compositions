@@ -33,15 +33,16 @@ module CompositionHelper
     show_block.append("Add the following volumes to master mix item: #{master_mix}")
     components.each do |comp|
       unless comp.item.present?
-        raise CompositionHelperError, "Item #{comp.input_name} not present"
+        raise CompositionHelperError, "item #{comp.input_name} not present"
       end
 
       show_block.append(pipet(volume: comp.volume_hash(adj_qty: adj_qty),
-                   source: comp.item,
-                   destination: master_mix)
+                              source: comp.display_name,
+                              destination: master_mix.display_name)
       )
+
     end
-    show_block += shake(items: [master_mix], type: 'Vortex Mixer') if vortex
+    show_block += shake(items: [master_mix.display_name], type: 'Vortex Mixer') if vortex
     components.each do |comp|
       item_to_item_vol_transfer(volume: comp.volume_hash(adj_qty: adj_qty),
                                 key: 'volume_transfer',
@@ -63,25 +64,28 @@ module CompositionHelper
   end
 
   # =========== Universal Method ========= #
-  def location_table(objects, adj_qty: false)
-    location_table = [%w(Name Description Location Quantity Note)]
-    objects.each do |obj|
-      name = obj.input_name.to_s
-      name += "-#{obj.item}" if obj.respond_to? :item
+  def volume_location_table(objects, adj_qty: false)
+    location_table = create_location_table(objects)
+
+    location_table.first.concat(['Quantity', 'Notes'])
+
+    objects.each_with_index do |obj, idx|
+      row = location_table[idx + 1]
       qty = obj.qty_display(adj_quantities: adj_qty)
-      location_table.push([name, obj.description, obj.location, qty, obj.notes])
+
+      row.concat([qty, obj.notes || 'na'])
     end
     location_table
   end
 
   private
 
-  def show_retrieve_parts(objects, adj_qty: false)
+  def show_retrieve_parts(objects, adj_qty: true)
     return unless objects.present?
     show do
       title 'Retrieve Materials'
       note 'Please get the following materials'
-      table location_table(objects, adj_qty: adj_qty)
+      table volume_location_table(objects, adj_qty: adj_qty)
     end
   end
 end

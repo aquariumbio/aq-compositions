@@ -135,15 +135,16 @@ class AbstractComposition
     added_components.map(&:qty).reduce(:+).round(round)
   end
 
-  # Retrieves components by input_name
-  # Will check components first and if nil then
-  #    No two things should
-  #      share input name
+  # Retrieves components by input_name for array of strings or single string
   #
-  # @param input_name [String] the name of the component to be retrieved
-  # @return [Component]
+  # @param input_name [String] or [Array<String>]
+  # @return [Component] or [Array<Component>]
   def input(input_name)
-    components.find { |c| c.input_name == input_name }
+    if input_name.is_a? Array
+      input_name.map{ |iname| find_input(iname) }
+    else
+      find_input(input_name)
+    end
   end
 
   # Displays the total reaction volume with units
@@ -178,6 +179,14 @@ class AbstractComposition
       repeated_names = names.detect{ |name| names.count(name) > 1 }
       raise DuplicateNamesError, "There are duplicate input names #{repeated_names}"
     end
+  end
+
+  # Retrieves components by input_name for a single string
+  #
+  # @param input_name [String] or [Array<String>]
+  # @return [Component] or [Array<Component>]
+  def find_input(input_name)
+    components.find { |c| c.input_name == input_name }
   end
 
 end

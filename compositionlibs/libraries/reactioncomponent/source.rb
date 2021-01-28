@@ -8,8 +8,8 @@ needs 'Standard Libs/Units'
 class Component
   include Units
 
-  attr_reader :input_name, :qty, :units
-  attr_accessor :added, :location, :description, :lot_number, :adj_qty, :notes
+  attr_reader :input_name, :qty
+  attr_accessor :added, :location, :description, :lot_number, :adj_qty, :notes, :units
 
   LOT_NUM = 'Lot_Number'
 
@@ -165,9 +165,6 @@ class ReactionComponent < Component
         @sample = item.sample
       end
       @item = item
-    end
-    if object_type.nil?
-      @object_type = item.object_type
     end
   end
 
