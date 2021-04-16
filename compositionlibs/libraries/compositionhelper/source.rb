@@ -36,6 +36,8 @@ module CompositionHelper
         raise CompositionHelperError, "item #{comp.input_name} not present"
       end
 
+      raise components.first.display_name
+
       show_block.append(pipet(volume: comp.volume_hash(adj_qty: adj_qty),
                               source: comp.display_name,
                               destination: master_mix.display_name)
